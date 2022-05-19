@@ -158,20 +158,21 @@ while running:
             running = False
         # Проверка тыков 
         elif event.type == pygame.KEYDOWN:
-            if event.key ==100:  
+            
+            if event.key ==pygame.K_a:  
                 LeftHeld = True
-            elif event.key == 97:
+            elif event.key == pygame.K_d:
                 RightHeld = True
-            elif event.key == 32:
+            elif event.key == pygame.K_SPACE:
                 UpHeld = True
             # elif event.key == 115:
             #     random_spawn(ball,cave)
                 # DownHeld = True
 
         elif event.type == pygame.KEYUP:
-            if event.key ==100:  
+            if event.key ==pygame.K_a:  
                 LeftHeld = False
-            elif event.key == 97:
+            elif event.key == pygame.K_d:
                 RightHeld = False
             # elif event.key == 119:
             #     UpHeld = False
@@ -182,9 +183,9 @@ while running:
     if LeftHeld == RightHeld:
         Vx = 0
     if RightHeld == True:
-        Vx = -Vx0
-    elif LeftHeld == True:
         Vx = Vx0
+    elif LeftHeld == True:
+        Vx = -Vx0
     
     if UpHeld:
         if Jump_flag:
