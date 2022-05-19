@@ -98,10 +98,14 @@ BLUE = (0, 0, 255)
 GRAY = (127,127,127)
 
 # Настройки движения
-Vx0 = 5
+Vx_acceleration = 3
+Vx_deceliration = 4
 Vy0 = 15
+
 Vx = 0
 Vy = 0
+
+Vx_max = 7
 g = 1
 
 cave = pygame.image.load("src\Textures\cave.png") 
@@ -181,12 +185,14 @@ while running:
 
     # Если кнопка зажата, то
     if LeftHeld == RightHeld:
-        Vx = 0
+        if Vx>0:
+            Vx = max(0,Vx-Vx_deceliration)
+        else:
+            Vx = min(0,Vx+Vx_deceliration)
     if RightHeld == True:
-        Vx = Vx0
+        Vx = min(Vx+Vx_acceleration,Vx_max)
     elif LeftHeld == True:
-        Vx = -Vx0
-    
+        Vx = max(Vx-Vx_acceleration,-Vx_max)
     if UpHeld:
         if Jump_flag:
             Vy = -Vy0
