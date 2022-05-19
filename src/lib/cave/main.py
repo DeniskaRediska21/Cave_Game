@@ -32,7 +32,7 @@ class Cave:
         return room
 
 
-    def save_cave(self,fill_percent,l,h,step,scale):
+    def save_cave(self,fill_percent,l,h,step,scale,smooth_pixels = True):
         # fill_percent = 47
         # h = 60
         # l = 80
@@ -47,7 +47,8 @@ class Cave:
         room = np.array(room).repeat(scale,axis=0).repeat(scale,axis=1) 
 
         # Сглаживание останков пикселей
-        room = self.smooth(room,scale//2)
+        if smooth_pixels:
+            room = self.smooth(room,scale//2)
 
         # Приведение в формат L
         room = room*255
@@ -67,15 +68,15 @@ class Cave:
         image_out.putdata(pixels)
         image_alpha.putdata(alpha)
         image_out.putalpha(image_alpha)
-        image_out.save('cave.png')
+        image_out.save('src/Textures/cave.png')
         return room
 
 
-from PIL import Image
-import numpy as np
-import PIL
-import itertools
+# from PIL import Image
+# import numpy as np
+# import PIL
+# import itertools
 l=80
 h=60
 cave = Cave()
-cave.save_cave(47,l,h,1,10)
+cave.save_cave(47,l,h,1,10,smooth_pixels=False)
