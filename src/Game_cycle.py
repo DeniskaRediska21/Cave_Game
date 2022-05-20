@@ -8,9 +8,80 @@ h=60
 cave = Cave()
 cave.save_cave(47,l,h,1,10,smooth_pixels=False) #True для гладкой карты, False(Быстрее) для пиксельной
 
+class combat(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites.__init__(self.sprites)
+        self.animate.__init__(self.animate)
+        self.image = self.sprites.mining_hit_right[0]
+        self.rect = self.image.get_rect() # size and position
+
+    def update(self,character):
+        if self.animate.mining_hit_right:
+            self.rect.bottomleft = character.rect.bottomright
+        elif self.animate.mining_hit_left:
+            self.rect.bottomright = character.rect.bottomleft
+
+        if self.animate.mining_hit_right == True:
+            self.animate.current_frame += 0.2
+            if self.animate.current_frame >= len(self.sprites.mining_hit_right):
+                self.animate.current_frame = 0
+                self.animate.mining_hit_right = False
+            self.image = self.sprites.mining_hit_right[int(self.animate.current_frame)]
+            # self.animate.Set_offsets(self)
+
+        if self.animate.mining_hit_left == True:
+            self.animate.current_frame += 0.2
+            if self.animate.current_frame >= len(self.sprites.mining_hit_left):
+                self.animate.current_frame = 0
+                self.animate.mining_hit_left = False
+            self.image = self.sprites.mining_hit_left[int(self.animate.current_frame)]
+            # self.animate.Set_offsets(self)
+
+    class animate():
+        def __init__(self):
+            self.current_frame = 0
+            self.x_offset = 0
+            self.y_offset = 0
+            
+            self.mining_hit_right = False
+            self.mining_hit_left = False
+
+        # def Set_offsets(self):
+        #     self.animate.x_offset = (self.image.get_rect().width - self.w)/2
+        #     self.animate.y_offset = (self.image.get_rect().height - self.h)
+
+        def setup(self):
+                self.current_frame = 0
+                self.mining_hit_right = False
+                self.mining_hit_left = False
+                
+        def Mining_hit_right(self):
+            if not self.mining_hit_right:
+                self.setup(self)
+                self.mining_hit_right = True
+
+        def Mining_hit_left(self):
+            if not self.mining_hit_left:
+                self.setup(self)
+                self.mining_hit_left = True
+
+    class sprites():
+        def __init__(self):
+            self.mining_hit_right = []
+            self.mining_hit_left = []
+
+            self.mining_hit_right.append(pygame.image.load("src\Textures\Mining_hit_r_1.png"))
+            self.mining_hit_right.append(pygame.image.load("src\Textures\Mining_hit_r_2.png"))
+            self.mining_hit_right.append(pygame.image.load("src\Textures\Mining_hit_r_3.png"))
+
+            self.mining_hit_left.append(pygame.image.load("src\Textures\Mining_hit_l_1.png"))
+            self.mining_hit_left.append(pygame.image.load("src\Textures\Mining_hit_l_2.png"))
+            self.mining_hit_left.append(pygame.image.load("src\Textures\Mining_hit_l_3.png"))
+        
+
 class character(pygame.sprite.Sprite):
     def __init__(self,pos):
-
         pygame.sprite.Sprite.__init__(self)
         self.sprites.__init__(self.sprites)
         self.animate.__init__(self.animate)
@@ -102,65 +173,42 @@ class character(pygame.sprite.Sprite):
             self.animate.x_offset = (self.image.get_rect().width - self.w)/2
             self.animate.y_offset = (self.image.get_rect().height - self.h)
 
-        def Walking_right(self):
-            if not self.walking_right:
-                # self.x_offset = 0
+        def setup(self):
                 self.current_frame = 0
-                self.walking_right = True
+                self.walking_right = False
                 self.walking_left = False
                 self.jumping = False
                 self.falling = False
                 self.standing = False
+
+        def Walking_right(self):
+            if not self.walking_right:
+                self.setup(self)
+                self.walking_right = True
                 self.landed = False
+  
         def Walking_left(self):
             if not self.walking_left:
-                # self.x_offset = 0
-                self.current_frame = 0
-                self.walking_right = False
+                self.setup(self)
                 self.walking_left = True
-                self.jumping = False
-                self.falling = False
-                self.standing = False
                 self.landed = False
         def Falling(self):
             if not self.falling:
-                # self.x_offset = 0
-                self.current_frame = 0
-                self.walking_right = False
-                self.walking_left = False
-                self.jumping = False
+                self.setup(self)
                 self.falling = True
-                self.standing = False
                 self.landed = False
         def Jumping(self):
             if not self.jumping:
-                # self.x_offset = 0
-                self.current_frame = 0
-                self.walking_right = False
-                self.walking_left = False
+                self.setup(self)
                 self.jumping = True
-                self.falling = False
-                self.standing = False
                 self.landed = False
         def Standing(self):
             if not self.standing:
-                # self.x_offset = 0
-                self.current_frame = 0
-                self.walking_right = False
-                self.walking_left = False
-                self.jumping = False
-                self.falling = False
+                self.setup(self)
                 self.standing = True
-                # self.landed = False
         def Landed(self):
             if not self.landed:
-                # self.x_offset = 0
-                self.current_frame = 0
-                self.walking_right = False
-                self.walking_left = False
-                self.jumping = False
-                self.falling = False
-                self.standing = False
+                self.setup(self)
                 self.landed = True
 
     class sprites():
@@ -190,6 +238,7 @@ class character(pygame.sprite.Sprite):
             self.landed.append(pygame.image.load("src\Textures\Player_landed_1.png"))
             self.landed.append(pygame.image.load("src\Textures\Player_landed_2.png"))
             self.landed.append(pygame.image.load("src\Textures\Player_landed_3.png"))
+
         
         
 
@@ -279,30 +328,30 @@ GRAY = (127,127,127)
 # Настройки движения
 Vx_acceleration = 3
 Vx_deceliration = 4
+# Высота прыжка
 Vy0 = 15
 
 Vx = 0
 Vy = 0
-
+# Максимальная скорость по X
 Vx_max = 7
+# Ускорение свободного падения
 g = 1
 
 cave = pygame.image.load("src\Textures\cave.png") 
 cave = map(cave)
 
-radius = 10
 
-# CircleX = round(random.random() * cave.rect.width)
-# CircleY = round(random.random() * cave.rect.height)
-
-# ball = pygame.Surface((radius*2,radius*2))
 ball = character((0,0))
 random_spawn(ball,cave)
-
+weapon = combat((ball.rect.x,ball.rect.y))
 # Группировка спрайтов
 all_sprites = pygame.sprite.Group()
 all_sprites.add(ball)
 all_sprites.add(cave)
+
+combat_sprites = pygame.sprite.Group()
+combat_sprites.add(weapon)
 
 Jump_flag = True
 
@@ -322,11 +371,14 @@ UpHeld = False
 DownHeld = False
 RightHeld = False
 LeftHeld = False
+MiningRight = False
+MiningLeft = False 
 onground = False
 # Цикл игры
 running = True
 while running:
-
+    MiningRight = False
+    MiningLeft = False 
     UpHeld = False
     Vx_flag = False
     Vy_flag = False
@@ -337,7 +389,6 @@ while running:
     # Отрисовка
     screen.blit(ball.image,(ball.rect.x-ball.animate.x_offset,ball.rect.y-ball.animate.y_offset))
     screen.blit(cave.image,cave.rect.topleft)
-    
     # all_sprites.draw(screen)
 
     # Ввод процесса (события)
@@ -354,19 +405,16 @@ while running:
                 RightHeld = True
             elif event.key == pygame.K_SPACE:
                 UpHeld = True
-            # elif event.key == 115:
-            #     random_spawn(ball,cave)
-                # DownHeld = True
+            elif event.key == pygame.K_w:
+                MiningRight = True
+            elif event.key == pygame.K_s:
+                MiningLeft = True
 
         elif event.type == pygame.KEYUP:
             if event.key ==pygame.K_a:  
                 LeftHeld = False
             elif event.key == pygame.K_d:
                 RightHeld = False
-            # elif event.key == 119:
-            #     UpHeld = False
-            # elif event.key == 115:
-            #     DownHeld = False
 
     # проверка стоит ли на земле
     onground_prev = onground
@@ -406,6 +454,17 @@ while running:
             Vy = -Vy0
             Jump_flag = False
 
+    if MiningRight:
+        weapon.animate.Mining_hit_right(weapon.animate)
+        
+    if MiningLeft:
+        weapon.animate.Mining_hit_left(weapon.animate)
+    
+    combat_sprites.update(ball)
+
+
+    if weapon.animate.mining_hit_right or weapon.animate.mining_hit_left:
+       screen.blit(weapon.image,(weapon.rect.x-weapon.animate.x_offset,weapon.rect.y-weapon.animate.y_offset)) 
     # Движение по X
     ball.rect.centerx += Vx
     Vx_flag = check_mask_collision(ball,cave,Vx,0)
