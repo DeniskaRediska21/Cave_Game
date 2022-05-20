@@ -1,2 +1,2 @@
 # Cave_Game
-Arcade Python game to test genetic algorythms.
+Pygame Python game to test mask collision.
