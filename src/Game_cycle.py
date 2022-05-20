@@ -35,7 +35,7 @@ class map(pygame.sprite.Sprite):
 
 
 
-def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 5):
+def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
     Flag = 0    
     if pygame.sprite.collide_mask(map,ball) != None:
         Flag = 4
@@ -43,11 +43,11 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 5):
             for i in range(abs(Vx)):
                 Flag = 3
                 ball.rect.right -= 1
-                ball.rect.bottom -= slope_tolarance
                 for j in range(slope_tolarance):
-                    ball.rect.bottom += 1
+                    ball.rect.bottom -= 1
                     if pygame.sprite.collide_mask(map,ball) == None:
-                        break
+                        return Flag
+                ball.rect.bottom += slope_tolarance
                 if pygame.sprite.collide_mask(map,ball) == None:
                     return Flag
 
@@ -56,11 +56,11 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 5):
             for i in range(abs(Vx)):
                 Flag = 3
                 ball.rect.left += 1
-                ball.rect.bottom -= slope_tolarance
                 for j in range(slope_tolarance):
-                    ball.rect.bottom += 1
+                    ball.rect.bottom -= 1
                     if pygame.sprite.collide_mask(map,ball) == None:
-                        break
+                        return Flag
+                ball.rect.bottom += slope_tolarance
                 if pygame.sprite.collide_mask(map,ball) == None:
                     return Flag
 
