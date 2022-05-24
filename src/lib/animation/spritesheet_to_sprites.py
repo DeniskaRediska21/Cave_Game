@@ -32,13 +32,15 @@ def sheet2frames(file):
 
     lengths = np.array(ends)-np.array(beginings)
 
-    RECT_WIDTH = max(lengths)
+    RECT_WIDTH = max(lengths)+2
     RECT_HIEGHT = min(size)
     frames = []
     for number,begining in enumerate(beginings):
         selection_window = (pygame.Rect(begining - (RECT_WIDTH-lengths[number])/2,0,RECT_WIDTH,RECT_HIEGHT))
         frames.append(spritesheet.subsurface(selection_window))
     return frames
+
+# frames = sheet2frames('src\Textures\Player_static_1.png')
 # WIDTH = 800
 # HEIGHT = 600
 # FPS = 30

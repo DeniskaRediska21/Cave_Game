@@ -1,4 +1,6 @@
 import pygame
+from lib.animation.spritesheet_to_sprites import sheet2frames
+
 class character(pygame.sprite.Sprite):
     def __init__(self,pos):
         pygame.sprite.Sprite.__init__(self)
@@ -141,6 +143,7 @@ class character(pygame.sprite.Sprite):
             self.static.append(pygame.image.load("src\Textures\Player_static_1.png"))
             self.static.append(pygame.image.load("src\Textures\Player_static_2.png"))
             self.static.append(pygame.image.load("src\Textures\Player_static_3.png"))
+            # self.static = sheet2frames('src\Textures\Player_static_1.png')
 
             self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_1.png"))
             self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_2.png"))

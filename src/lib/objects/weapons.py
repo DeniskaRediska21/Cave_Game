@@ -1,4 +1,6 @@
 import pygame
+from lib.animation.spritesheet_to_sprites import sheet2frames
+
 class mele(pygame.sprite.Sprite):
     def __init__(self,pos):
         pygame.sprite.Sprite.__init__(self)
