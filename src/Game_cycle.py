@@ -17,7 +17,7 @@ from lib.colisions.colisions import check_ground
 l=80
 h=60
 cave = Cave()
-cave.save_cave(47,l,h,1,10,smooth_pixels=False) #True для гладкой карты, False(Быстрее) для пиксельной
+cave.save_cave(47,l,h,1,10,smooth_pixels=False)  # True для гладкой карты, False(Быстрее) для пиксельной
 
 # Задаем цвета
 WHITE = (255, 255, 255)
@@ -40,8 +40,7 @@ Vx_max = 7
 # Ускорение свободного падения
 g = 1
 
-cave = pygame.image.load("src\Textures\cave.png") 
-cave = map(cave)
+cave = map("src\Textures\cave.png")
 
 
 ball = character((0,0))
@@ -65,7 +64,7 @@ FPS = 30
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("My Game")
+pygame.display.set_caption("Cave Game")
 clock = pygame.time.Clock()
 
 
@@ -89,8 +88,8 @@ while running:
     screen.fill(GRAY)
 
     # Отрисовка
-    screen.blit(ball.image,(ball.rect.x-ball.animate.x_offset,ball.rect.y-ball.animate.y_offset))
-    screen.blit(cave.image,cave.rect.topleft)
+    screen.blit(ball.image, (ball.rect.x-ball.animate.x_offset, ball.rect.y-ball.animate.y_offset))
+    screen.blit(cave.image, cave.rect.topleft)
     # all_sprites.draw(screen)
 
     # Ввод процесса (события)

@@ -140,16 +140,17 @@ class character(pygame.sprite.Sprite):
             self.jumping = []
             self.falling = []
             self.landed = []
-            self.static.append(pygame.image.load("src\Textures\Player_static_1.png"))
-            self.static.append(pygame.image.load("src\Textures\Player_static_2.png"))
-            self.static.append(pygame.image.load("src\Textures\Player_static_3.png"))
-            # self.static = sheet2frames('src\Textures\Player_static_1.png')
+            # self.static.append(pygame.image.load("src\Textures\Player_static_1.png"))
+            # self.static.append(pygame.image.load("src\Textures\Player_static_2.png"))
+            # self.static.append(pygame.image.load("src\Textures\Player_static_3.png"))
+            self.static = sheet2frames('src\Textures\Player_static.png')
 
             self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_1.png"))
             self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_2.png"))
 
-            self.walking_left.append(pygame.image.load("src\Textures\Player_walking_l_1.png"))
-            self.walking_left.append(pygame.image.load("src\Textures\Player_walking_l_2.png"))
+            # Движение налево обратно движению направо
+            for frame in self.walking_right:
+                self.walking_left.append(pygame.transform.flip(frame, True, False))
 
             self.jumping.append(pygame.image.load("src\Textures\Player_jumping_1.png"))
             self.jumping.append(pygame.image.load("src\Textures\Player_jumping_2.png"))

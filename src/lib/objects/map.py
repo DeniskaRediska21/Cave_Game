@@ -4,8 +4,9 @@ from lib.colisions.colisions import check_mask_collision
 
 class map(pygame.sprite.Sprite):
 
-    def __init__(self, surface):
+    def __init__(self, file):
         pygame.sprite.Sprite.__init__(self)
+        surface = pygame.image.load(file)
 
         self.image = surface
 

@@ -2,21 +2,22 @@ import pygame
 import numpy as np
 def sheet2frames(file):
     spritesheet = pygame.image.load(file)
-    spritesheet.set_colorkey((255,255,255))
+    spritesheet.set_colorkey((255, 255, 255, 255))
 
     length = len(spritesheet.get_at((0,0)))-1
     sections = []
     size = spritesheet.get_size()
     colorkey = spritesheet.get_colorkey()
 
-    for i in range(max(size)-1):
+    for i in range(max(size)):
         current_colomn = 0
-        for j in range(min(size)-1):
+        for j in range(min(size)):
             current_pixel = spritesheet.get_at((i,j))
             if not current_pixel == colorkey:
                 current_colomn = max(current_colomn,current_pixel[length])
 
         sections.append(current_colomn)
+
     sections.append(0)
 
     beginings = []
@@ -32,19 +33,31 @@ def sheet2frames(file):
 
     lengths = np.array(ends)-np.array(beginings)
 
-    RECT_WIDTH = max(lengths)+2
-    RECT_HIEGHT = min(size)
+    heights = np.zeros_like(lengths)
+    for number, begining in enumerate(beginings):
+        for j in range(ends[number] - begining+1):
+            current_height = 0
+            for i in range(min(size)):
+                current_pixel = spritesheet.get_at((begining + j,i))
+                if not current_pixel == colorkey and current_pixel[length] != 0:
+                    current_height += 1
+            heights[number] = max(heights[number], current_height)
+
+    RECT_WIDTH = max(lengths)
+    # RECT_HIEGHT = min(size)
+    print(lengths+1)
     frames = []
     for number,begining in enumerate(beginings):
-        selection_window = (pygame.Rect(begining - (RECT_WIDTH-lengths[number])/2,0,RECT_WIDTH,RECT_HIEGHT))
+        selection_window = (pygame.Rect(begining,0,lengths[number]+1,heights[number]))
+        selection_window.bottom = max(heights)
         frames.append(spritesheet.subsurface(selection_window))
     return frames
 
-# frames = sheet2frames('src\Textures\Player_static_1.png')
-# WIDTH = 800
-# HEIGHT = 600
+# frames = sheet2frames('src\Textures\Player_static.png')
+# WIDTH = 200
+# HEIGHT = 200
 # FPS = 30
-
+#
 # # Создаем игру и окно
 # pygame.init()
 # pygame.mixer.init()
@@ -55,7 +68,7 @@ def sheet2frames(file):
 # running = True
 # while running:
 #     screen.fill((127,127,127))
-
+#
 #     screen.blit(frames[n_frame],(100,100))
 #     for event in pygame.event.get():
 #         # check for closing window
@@ -68,5 +81,5 @@ def sheet2frames(file):
 #                     n_frame = 0
 #     clock.tick(FPS)
 #     pygame.display.flip()
-
+#
 # pygame.quit()
