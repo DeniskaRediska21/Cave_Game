@@ -14,6 +14,11 @@ class map(pygame.sprite.Sprite):
 
         self.mask = pygame.mask.from_surface(self.image)
         
+    def update(self):
+        inverted_mask = self.mask.copy()
+        inverted_mask.invert()
+        self.image = inverted_mask.to_surface()
+        self.image.set_colorkey((255, 255, 255, 255))
 
 
 

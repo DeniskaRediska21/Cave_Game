@@ -45,7 +45,6 @@ def sheet2frames(file):
 
     RECT_WIDTH = max(lengths)
     # RECT_HIEGHT = min(size)
-    print(lengths+1)
     frames = []
     for number,begining in enumerate(beginings):
         selection_window = (pygame.Rect(begining,0,lengths[number]+1,heights[number]))

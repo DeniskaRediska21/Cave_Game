@@ -10,7 +10,21 @@ def check_ground(ball,map):
     return onground
 
 def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
-    Flag = 0    
+    Flag = 0  
+    # Границы карты
+    if ball.rect.top < map.rect.top:
+        ball.rect.top = map.rect.top
+        Flag = 1
+    if ball.rect.bottom > map.rect.bottom:
+        ball.rect.bottom = map.rect.bottom
+        Flag = 2
+    if ball.rect.left < map.rect.left:
+        ball.rect.left = map.rect.left   
+    if ball.rect.right > map.rect.right:
+        ball.rect.right = map.rect.right 
+        
+    # Остальная коллизия    
+      
     if pygame.sprite.collide_mask(map,ball) != None:
         Flag = 4
         if Vx>0:

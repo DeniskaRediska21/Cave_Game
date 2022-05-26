@@ -89,7 +89,7 @@ while running:
     player_camera_pos = np.array((player.rect.x-player.animate.x_offset, player.rect.y -player.animate.y_offset)) - camera_scroll
     
     
-    screen.fill(GRAY)
+    screen.fill(BLACK)
     screen.blit(background,cave_camera_pos)
     screen.blit(player.image, player_camera_pos)
     screen.blit(cave.image, cave_camera_pos)
@@ -157,14 +157,14 @@ while running:
     if MiningLeft:
         weapon.animate.Mining_hit_left(weapon.animate)
     
-    mele_sprites.update(player)
+    mele_sprites.update(player,cave)
 
 
     if weapon.animate.mining_hit_right or weapon.animate.mining_hit_left:
     #    screen.blit(weapon.image,(weapon.rect.x-weapon.animate.x_offset,weapon.rect.y-weapon.animate.y_offset)) 
-        weapon_camera_pos = player_camera_pos
-        weapon_camera_pos[0] -= weapon.animate.x_offset
-        weapon_camera_pos[1] -= weapon.rect.height - player.rect.height
+        weapon_camera_pos = np.array((weapon.rect.x,weapon.rect.y))-camera_scroll
+        # weapon_camera_pos[0] -= weapon.animate.x_offset
+        # weapon_camera_pos[1] -= weapon.rect.height - player.rect.height
         screen.blit(weapon.image,weapon_camera_pos) 
     
     # Держим цикл на правильной скорости
