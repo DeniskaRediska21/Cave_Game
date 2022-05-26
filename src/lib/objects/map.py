@@ -13,6 +13,7 @@ class map(pygame.sprite.Sprite):
         self.rect = self.image.get_rect() # size and position
 
         self.mask = pygame.mask.from_surface(self.image)
+        
 
 
 

@@ -32,18 +32,26 @@ class character(pygame.sprite.Sprite):
         self.g = 1
         
         self.Jump_flag = True
+        self.onground_prev = False
+        self.onground = False
 
     def jump(self):
         if self.Jump_flag:
             self.Vy = -self.Vy_jump
             self.Jump_flag = False
     
-    def walk_right(self):
+    def accelerate_right(self):
         self.Vx = min(self.Vx+self.Vx_acceleration,self.Vx_max)   
     
-    def walk_left(self):
+    def accelerate_left(self):
         self.Vx = max(self.Vx-self.Vx_acceleration,-self.Vx_max)
-                
+        
+    def decelerate(self):
+        if self.Vx>0:
+            self.Vx = max(0,self.Vx-self.Vx_deceliration)
+        else:
+            self.Vx = min(0,self.Vx+self.Vx_deceliration)
+           
     def update(self,cave):
         self.rect.centerx += self.Vx
         Vx_flag = check_mask_collision(self,cave,self.Vx,0)
