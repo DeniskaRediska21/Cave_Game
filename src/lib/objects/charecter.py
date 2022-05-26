@@ -1,5 +1,6 @@
 import pygame
 from lib.animation.spritesheet_to_sprites import sheet2frames
+from lib.colisions.colisions import check_mask_collision
 
 class character(pygame.sprite.Sprite):
     def __init__(self,pos):
@@ -17,9 +18,50 @@ class character(pygame.sprite.Sprite):
         self.w = self.rect.width
         self.h = self.rect.height
         self.mask = pygame.mask.from_surface(self.image)
+        # Настройки движения
+        self.Vx_acceleration = 3
+        self.Vx_deceliration = 4
+        # Высота прыжка
+        self.Vy_jump = 15
 
+        self.Vx = 0
+        self.Vy = 0
+        # Максимальная скорость по X
+        self.Vx_max = 7
+        # Ускорение свободного падения
+        self.g = 1
+        
+        self.Jump_flag = True
+
+    def jump(self):
+        if self.Jump_flag:
+            self.Vy = -self.Vy_jump
+            self.Jump_flag = False
     
-    def update(self):
+    def walk_right(self):
+        self.Vx = min(self.Vx+self.Vx_acceleration,self.Vx_max)   
+    
+    def walk_left(self):
+        self.Vx = max(self.Vx-self.Vx_acceleration,-self.Vx_max)
+                
+    def update(self,cave):
+        self.rect.centerx += self.Vx
+        Vx_flag = check_mask_collision(self,cave,self.Vx,0)
+
+        # Движение по Y
+        self.rect.centery += self.Vy 
+        Vy_flag = check_mask_collision(self,cave,0,self.Vy)
+
+        # Если ударисля о пол или потолок
+        if Vy_flag == 1:
+            self.Vy = 0
+        elif Vy_flag == 2:
+            self.Vy = 0
+            self.Jump_flag = True
+
+        # Гравитация
+        self.Vy +=self.g 
+        
         self.animate.x_offset = 0
         self.animate.y_offset = 0
         if self.animate.standing == True and self.animate.landed == False:
@@ -89,6 +131,12 @@ class character(pygame.sprite.Sprite):
             self.falling = False
             self.standing = False
             self.landed = False
+            # timings.standing = 0.05
+            # timings.walking_right = 0.2
+            # timings.walking_left = 0.2
+            # timings.jumping = 0.1
+            # timings.falling = 0.1
+            # timings.landed = 1
 
         def Set_offsets(self):
             self.animate.x_offset = (self.image.get_rect().width - self.w)/2
