@@ -11,22 +11,20 @@ class mele(pygame.sprite.Sprite):
         
         self.w = self.rect.width
         self.h = self.rect.height
+        self.block_damage = 0.5
         
-    def break_blocks(self,cave,character):
-        self.animate.Set_offsets(self,character)
-        cave.mask.erase(self.mask, self.rect.topleft)
     
     def update(self,character,cave):
         if self.animate.mining_hit_right:
-            self.rect.bottomleft = character.rect.bottomright
+            self.rect.bottomleft = character.rect.bottomleft
         elif self.animate.mining_hit_left:
-            self.rect.bottomright = character.rect.bottomleft
+            self.rect.bottomright = character.rect.bottomright
 
         if self.animate.mining_hit_right == True:
             self.animate.current_frame += 0.4
             if self.animate.current_frame >= len(self.sprites.mining_hit_right):
                 self.animate.current_frame = 0
-                self.break_blocks(cave,character)
+                cave.damage_blocks(self)
                 self.animate.mining_hit_right = False
                 
             self.image = self.sprites.mining_hit_right[int(self.animate.current_frame)]
@@ -39,7 +37,7 @@ class mele(pygame.sprite.Sprite):
             self.animate.current_frame += 0.4
             if self.animate.current_frame >= len(self.sprites.mining_hit_left):
                 self.animate.current_frame = 0
-                self.break_blocks(cave,character)
+                cave.damage_blocks(self)
                 self.animate.mining_hit_left = False
                 
             self.image = self.sprites.mining_hit_left[int(self.animate.current_frame)]

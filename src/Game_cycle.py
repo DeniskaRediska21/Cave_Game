@@ -11,6 +11,16 @@ from lib.animation.spritesheet_to_sprites import sheet2frames
 from lib.colisions.colisions import check_mask_collision
 from lib.colisions.colisions import check_ground
 
+WIDTH = 800
+HEIGHT = 400
+FPS = 30
+
+# Создаем игру и окно
+pygame.init()
+pygame.mixer.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Cave Game")
+clock = pygame.time.Clock()
 
 l=160
 h=80
@@ -41,23 +51,14 @@ mele_sprites.add(weapon)
 
 # Jump_flag = True
 
-WIDTH = cave.rect.width
-HEIGHT = cave.rect.height
-WIDTH = 800
-HEIGHT = 400
-FPS = 30
+
 
 background = pygame.Surface((l*scaling_coeff,h*scaling_coeff))
 background.fill(GRAY)
 
 camera_scroll_true = np.array((player.rect.x-WIDTH/2, player.rect.y-HEIGHT/2))
 
-# Создаем игру и окно
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Cave Game")
-clock = pygame.time.Clock()
+
 
 
 UpHeld = False
@@ -70,11 +71,11 @@ MiningLeft = False
 # Цикл игры
 running = True
 while running:
-    all_sprites.update()
+    all_sprites.update(weapon)
     
     MiningRight = False
     MiningLeft = False 
-    UpHeld = False
+    UpHeld = False   
     Vx_flag = False
     Vy_flag = False
     # Отрисовка

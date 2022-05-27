@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 def sheet2frames(file):
-    spritesheet = pygame.image.load(file)
+    spritesheet = pygame.image.load(file).convert_alpha()
     spritesheet.set_colorkey((255, 255, 255, 255))
 
     length = len(spritesheet.get_at((0,0)))-1

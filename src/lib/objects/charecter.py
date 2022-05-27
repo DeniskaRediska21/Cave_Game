@@ -201,21 +201,21 @@ class character(pygame.sprite.Sprite):
             # self.static.append(pygame.image.load("src\Textures\Player_static_3.png"))
             self.static = sheet2frames('src\Textures\Player_static.png')
 
-            self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_1.png"))
-            self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_2.png"))
+            self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_1.png").convert_alpha())
+            self.walking_right.append(pygame.image.load("src\Textures\Player_walking_r_2.png").convert_alpha())
 
             # Движение налево обратно движению направо
             for frame in self.walking_right:
                 self.walking_left.append(pygame.transform.flip(frame, True, False))
 
-            self.jumping.append(pygame.image.load("src\Textures\Player_jumping_1.png"))
-            self.jumping.append(pygame.image.load("src\Textures\Player_jumping_2.png"))
+            self.jumping.append(pygame.image.load("src\Textures\Player_jumping_1.png").convert_alpha())
+            self.jumping.append(pygame.image.load("src\Textures\Player_jumping_2.png").convert_alpha())
 
-            self.falling.append(pygame.image.load("src\Textures\Player_falling_1.png"))
-            self.falling.append(pygame.image.load("src\Textures\Player_falling_2.png"))
+            self.falling.append(pygame.image.load("src\Textures\Player_falling_1.png").convert_alpha())
+            self.falling.append(pygame.image.load("src\Textures\Player_falling_2.png").convert_alpha())
 
-            self.landed.append(pygame.image.load("src\Textures\Player_landed_1.png"))
-            self.landed.append(pygame.image.load("src\Textures\Player_landed_2.png"))
-            self.landed.append(pygame.image.load("src\Textures\Player_landed_3.png"))
+            self.landed.append(pygame.image.load("src\Textures\Player_landed_1.png").convert_alpha())
+            self.landed.append(pygame.image.load("src\Textures\Player_landed_2.png").convert_alpha())
+            self.landed.append(pygame.image.load("src\Textures\Player_landed_3.png").convert_alpha())
 
  
