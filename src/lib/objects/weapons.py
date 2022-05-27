@@ -1,5 +1,8 @@
 import pygame
+import numpy as np
+import math
 from lib.animation.spritesheet_to_sprites import sheet2frames
+from lib.colisions.colisions import check_mask_collision, check_mask_collision_simple
 
 class mele(pygame.sprite.Sprite):
     def __init__(self,pos):
@@ -88,4 +91,61 @@ class mele(pygame.sprite.Sprite):
             # Движение налево обратно движению направо
             for frame in self.mining_hit_right:
                 self.mining_hit_left.append(pygame.transform.flip(frame, True, False))
+
+class bullet(pygame.sprite.Sprite):
+    def __init__(self,angle,pos,velocity = 10, gravity = 0, image = 'src\Textures\Pistol_bullet.png'):
+        pygame.sprite.Sprite.__init__(self)
+        self.velocity = velocity
+        self.gravity = gravity
+        self.image = pygame.image.load(image).convert_alpha()
+        self.angle = angle
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
+        self.mask = pygame.mask.from_surface(self.image)
+        self.Vx = self.velocity*math.sin(self.angle)
+        self.Vy = self.velocity*math.cos(self.angle) 
+        self.block_damage = 0.5
+    
+    def update(self,cave):
+        self.rect.centerx += self.Vx
+        Flag_X = check_mask_collision_simple(self,cave,self.Vx,0)
         
+        self.rect.centery += self.Vy 
+        Flag_Y = check_mask_collision_simple(self,cave,self.Vx,0)
+        self.Vy += self.gravity
+        return Flag_X, Flag_Y
+
+    def explode(self,cave):
+        center = self.rect.center
+        self.image = pygame.image.load('src\Textures\Explosion.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        self.mask = pygame.mask.from_surface(self.image)
+        cave.damage_blocks(self)
+        
+      
+class shooting(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.bullets = []
+        self.angles = []
+        
+        
+    def shoot(self,camera_scroll,player):
+        mouse_pos = camera_scroll + np.array(pygame.mouse.get_pos())
+        angle = math.atan2(mouse_pos[0] - player.rect.centerx, mouse_pos[1] - player.rect.centery)
+        self.bullets.append(bullet(angle,player.rect.center))
+    
+    def update(self,cave):
+        for number,bullet in enumerate(self.bullets):
+            Flag_X,Flag_Y = bullet.update(cave)
+            if Flag_X or Flag_Y != 0:
+                bullet.explode(cave)
+                del self.bullets[number] 
+
+            
+        
+
+
+        
+    

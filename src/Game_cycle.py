@@ -1,10 +1,12 @@
 import pygame
 import random
 import numpy as np
+import math
 
 from lib.cave.main import Cave
 from lib.objects.charecter import character
 from lib.objects.weapons import mele
+from lib.objects.weapons import shooting
 from lib.objects.map import map
 from lib.objects.map import random_spawn
 from lib.animation.spritesheet_to_sprites import sheet2frames
@@ -41,13 +43,14 @@ cave = map("src\Textures\cave.png")
 
 player = character((0,0))
 random_spawn(player,cave)
-weapon = mele((player.rect.x,player.rect.y))
+fist = mele((player.rect.x,player.rect.y))
+pistol = shooting()
 # Группировка спрайтов
 all_sprites = pygame.sprite.Group()
 all_sprites.add(cave)
 
 mele_sprites = pygame.sprite.Group()
-mele_sprites.add(weapon)
+mele_sprites.add(fist)
 
 # Jump_flag = True
 
@@ -71,7 +74,7 @@ MiningLeft = False
 # Цикл игры
 running = True
 while running:
-    all_sprites.update(weapon)
+    all_sprites.update(fist)
     
     MiningRight = False
     MiningLeft = False 
@@ -94,6 +97,11 @@ while running:
     screen.blit(background,cave_camera_pos)
     screen.blit(player.image, player_camera_pos)
     screen.blit(cave.image, cave_camera_pos)
+    for number,bullet in enumerate(pistol.bullets):
+        screen.blit(bullet.image, np.array(bullet.rect.topleft) - camera_scroll)
+    
+    
+
     # Ввод процесса (события)
     for event in pygame.event.get():
         # check for closing window
@@ -118,6 +126,9 @@ while running:
                 LeftHeld = False
             elif event.key == pygame.K_d:
                 RightHeld = False
+                    
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pistol.shoot(camera_scroll,player)
 
     # проверка стоит ли на земле
     player.onground_prev = player.onground
@@ -153,23 +164,27 @@ while running:
         player.jump()
 
     if MiningRight:
-        weapon.animate.Mining_hit_right(weapon.animate)
+        fist.animate.Mining_hit_right(fist.animate)
         
     if MiningLeft:
-        weapon.animate.Mining_hit_left(weapon.animate)
+        fist.animate.Mining_hit_left(fist.animate)
     
     mele_sprites.update(player,cave)
 
 
-    if weapon.animate.mining_hit_right or weapon.animate.mining_hit_left:
-    #    screen.blit(weapon.image,(weapon.rect.x-weapon.animate.x_offset,weapon.rect.y-weapon.animate.y_offset)) 
-        weapon_camera_pos = np.array((weapon.rect.x,weapon.rect.y))-camera_scroll
-        # weapon_camera_pos[0] -= weapon.animate.x_offset
-        # weapon_camera_pos[1] -= weapon.rect.height - player.rect.height
-        screen.blit(weapon.image,weapon_camera_pos) 
+    if fist.animate.mining_hit_right or fist.animate.mining_hit_left:
+    #    screen.blit(fist.image,(fist.rect.x-fist.animate.x_offset,fist.rect.y-fist.animate.y_offset)) 
+        fist_camera_pos = np.array((fist.rect.x,fist.rect.y))-camera_scroll
+        # fist_camera_pos[0] -= fist.animate.x_offset
+        # fist_camera_pos[1] -= fist.rect.height - player.rect.height
+        screen.blit(fist.image,fist_camera_pos) 
+    
+    
+    
     
     # Держим цикл на правильной скорости
     player.update(cave)
+    pistol.update(cave)
     clock.tick(FPS)
     pygame.display.flip()
 pygame.quit()

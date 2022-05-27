@@ -61,8 +61,7 @@ class map(pygame.sprite.Sprite):
         health = np.zeros(self.rect.size)
         for i in range(self.rect.left,self.rect.right):
             for j in range(self.rect.top,self.rect.bottom):
-                if self.mask.get_at((i,j)) == 1:
-                    health[i][j] = 1
+                health[i][j] = self.mask.get_at((i,j))
         return health
 
 
