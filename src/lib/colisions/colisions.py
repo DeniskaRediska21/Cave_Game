@@ -28,7 +28,7 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
     if pygame.sprite.collide_mask(map,ball) != None:
         Flag = 4
         if Vx>0:
-            for i in range(abs(int(Vx))):
+            for i in range(abs(Vx)):
                 Flag = 3
                 ball.rect.right -= 1
                 for j in range(slope_tolarance):
@@ -41,7 +41,7 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
 
 
         elif Vx<0:
-            for i in range(abs(int(Vx))):
+            for i in range(abs(Vx)):
                 Flag = 3
                 ball.rect.left += 1
                 for j in range(slope_tolarance):
@@ -55,7 +55,7 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
 
         if Vy<0:
             Flag = 1
-            for i in range(abs(int(Vy))):
+            for i in range(abs(Vy)):
                 ball.rect.top += 1
                 if pygame.sprite.collide_mask(map,ball) == None:
                     return Flag
@@ -63,7 +63,7 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
 
         elif Vy>0:
             Flag = 2
-            for i in range(abs(int(Vy))):
+            for i in range(abs(Vy)):
                 ball.rect.bottom -= 1
                 if pygame.sprite.collide_mask(map,ball) == None:
                     return Flag
@@ -71,34 +71,35 @@ def check_mask_collision(ball,map,Vx,Vy,slope_tolarance = 10):
 
 
 def check_mask_collision_simple(object,map,Vx,Vy):
-    Flag = 0  
+    FlagX = 0
+    FlagY = 0  
     # Границы карты
     if object.rect.top < map.rect.top:
         object.rect.top = map.rect.top
-        Flag = 1
-    if object.rect.bottom > map.rect.bottom:
+        FlagY = 1
+    elif object.rect.bottom > map.rect.bottom:
         object.rect.bottom = map.rect.bottom
-        Flag = 2
+        FlagY= 2
     if object.rect.left < map.rect.left:
         object.rect.left = map.rect.left 
-        Flag = 3  
-    if object.rect.right > map.rect.right:
+        FlagX = 3  
+    elif object.rect.right > map.rect.right:
         object.rect.right = map.rect.right
-        Flag = 3
+        FlagX = 3
         
     # Остальная коллизия    
       
     if pygame.sprite.collide_mask(map,object) != None:
         Flag = 4
         if Vx>0 :
-            Flag = 3
+            FlagX = 3
         elif Vx<0:
-            Flag = 3
+            FlagX = 3
 
         if Vy<0:
-            Flag = 1
+            FlagY = 1
         elif Vy>0:
-            Flag = 2
+            FlagY = 2
 
-    return Flag
+    return FlagX,FlagY
 

@@ -40,7 +40,8 @@ class map(pygame.sprite.Sprite):
         for i in range(max(self.rect.left,int(shape.rect.left)),min(self.rect.right,int(shape.rect.right))):
             for j in range(max(self.rect.top,int(shape.rect.top)),min(self.rect.bottom,int(shape.rect.bottom))):
                 # damaging
-                if self.health[i][j] > 0:
+                mask_pos = shape.rect.topleft
+                if shape.mask.get_at((i-mask_pos[0],j-mask_pos[1])) == 1 and self.health[i][j] > 0:
                     self.health[i][j] -= shape.block_damage
                     pixel = self.image.get_at((i,j))
                     pixel[3] = int(self.health[i][j]*255)

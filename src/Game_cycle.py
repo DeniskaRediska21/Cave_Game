@@ -74,7 +74,13 @@ MiningLeft = False
 # Цикл игры
 running = True
 while running:
+    
     all_sprites.update(fist)
+    mele_sprites.update(player,cave)
+    player.update(cave)
+    pistol.update(cave)
+    
+    
     
     MiningRight = False
     MiningLeft = False 
@@ -107,7 +113,8 @@ while running:
         # check for closing window
         if event.type == pygame.QUIT:
             running = False
-        # Проверка тыков 
+            
+        # Проверка тыков     
         elif event.type == pygame.KEYDOWN:
             
             if event.key ==pygame.K_a:  
@@ -127,14 +134,18 @@ while running:
             elif event.key == pygame.K_d:
                 RightHeld = False
                     
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pistol.shoot(camera_scroll,player)
 
-    # проверка стоит ли на земле
+    # Если зажата кнопка, то стрелять
+    mouse = pygame.mouse.get_pressed(num_buttons=3)
+    if mouse[0]:
+        pistol.shoot(camera_scroll,player)
+
+    # Проверка стоит ли на земле и запоминание прошлого состояния для анимации
     player.onground_prev = player.onground
     player.onground = check_ground(player,cave)
+    
     # Если кнопка зажата, то 
-    # Триггеры анимации движения
+    # Триггеры анимации движения вправо и влево
     if LeftHeld == RightHeld:
         if player.onground:
             player.animate.Standing(player.animate)
@@ -146,16 +157,26 @@ while running:
             if player.Vx<0:
                 player.animate.Walking_left(player.animate)
 
+    # Если игрок не на земле и летит вверх, то играть анимацию прыжка,если падает, то падения
     if not player.onground:
         if player.Vy<0:
             player.animate.Jumping(player.animate)
         elif player.Vy>0:
             player.animate.Falling(player.animate)
 
+    # Если игрок на земле, а до этого на земле не был проиграть анимацию приземления
     if player.onground == True and player.onground_prev == False:
         player.animate.Landed(player.animate)
+        
+
+    # Если идет анимация удара, нарисовать кадр удара
+    if fist.animate.mining_hit_right or fist.animate.mining_hit_left:
+        fist_camera_pos = np.array((fist.rect.x,fist.rect.y))-camera_scroll
+        screen.blit(fist.image,fist_camera_pos) 
 
 
+
+    # Если зажата кнопка то ускоряемся
     if RightHeld and not LeftHeld:
         player.accelerate_right()
     elif LeftHeld and not RightHeld:
@@ -163,28 +184,23 @@ while running:
     if UpHeld:
         player.jump()
 
+    # В конце анимации запускается действие, поэтому вызывается анимация
     if MiningRight:
         fist.animate.Mining_hit_right(fist.animate)
         
     if MiningLeft:
         fist.animate.Mining_hit_left(fist.animate)
     
-    mele_sprites.update(player,cave)
+    
+    
 
 
-    if fist.animate.mining_hit_right or fist.animate.mining_hit_left:
-    #    screen.blit(fist.image,(fist.rect.x-fist.animate.x_offset,fist.rect.y-fist.animate.y_offset)) 
-        fist_camera_pos = np.array((fist.rect.x,fist.rect.y))-camera_scroll
-        # fist_camera_pos[0] -= fist.animate.x_offset
-        # fist_camera_pos[1] -= fist.rect.height - player.rect.height
-        screen.blit(fist.image,fist_camera_pos) 
     
     
     
     
     # Держим цикл на правильной скорости
-    player.update(cave)
-    pistol.update(cave)
+
     clock.tick(FPS)
     pygame.display.flip()
 pygame.quit()
