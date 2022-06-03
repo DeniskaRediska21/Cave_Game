@@ -7,6 +7,7 @@ from lib.cave.main import Cave
 from lib.objects.charecter import character
 from lib.objects.weapons import mele
 from lib.objects.weapons import shooting
+from lib.objects.weapons import projectiles
 from lib.objects.map import map
 from lib.objects.map import random_spawn
 from lib.animation.spritesheet_to_sprites import sheet2frames
@@ -28,7 +29,7 @@ l=160
 h=80
 scaling_coeff = 10
 cave = Cave()
-cave.save_cave(47,l,h,1,scaling_coeff,smooth_pixels=False)  # True для гладкой карты, False(Быстрее) для пиксельной
+cave.save_cave(47,l,h,1,scaling_coeff,smooth_pixels=False,smoothig_steps = 5)  # True для гладкой карты, False(Быстрее) для пиксельной
 
 # Задаем цвета
 WHITE = (255, 255, 255)
@@ -52,9 +53,7 @@ all_sprites.add(cave)
 mele_sprites = pygame.sprite.Group()
 mele_sprites.add(fist)
 
-# Jump_flag = True
-
-
+projectiles = projectiles()
 
 background = pygame.Surface((l*scaling_coeff,h*scaling_coeff))
 background.fill(GRAY)
@@ -75,12 +74,13 @@ MiningLeft = False
 running = True
 while running:
     
+    
     all_sprites.update(fist)
     mele_sprites.update(player,cave)
     player.update(cave)
     pistol.update(cave)
-    
-    
+    projectiles.update(cave)
+
     
     MiningRight = False
     MiningLeft = False 
@@ -100,12 +100,10 @@ while running:
     
     
     screen.fill(BLACK)
-    screen.blit(background,cave_camera_pos)
+    screen.blit(background,cave_camera_pos) 
     screen.blit(player.image, player_camera_pos)
     screen.blit(cave.image, cave_camera_pos)
-    for number,bullet in enumerate(pistol.bullets):
-        screen.blit(bullet.image, np.array(bullet.rect.topleft) - camera_scroll)
-    
+    projectiles.render(screen, camera_scroll)
     
 
     # Ввод процесса (события)
@@ -113,7 +111,7 @@ while running:
         # check for closing window
         if event.type == pygame.QUIT:
             running = False
-            
+    
         # Проверка тыков     
         elif event.type == pygame.KEYDOWN:
             
@@ -138,11 +136,13 @@ while running:
     # Если зажата кнопка, то стрелять
     mouse = pygame.mouse.get_pressed(num_buttons=3)
     if mouse[0]:
-        pistol.shoot(camera_scroll,player)
+        pistol.shoot(camera_scroll,player,projectiles)
+        
 
     # Проверка стоит ли на земле и запоминание прошлого состояния для анимации
     player.onground_prev = player.onground
     player.onground = check_ground(player,cave)
+    
     
     # Если кнопка зажата, то 
     # Триггеры анимации движения вправо и влево
@@ -156,6 +156,7 @@ while running:
                 player.animate.Walking_right(player.animate)
             if player.Vx<0:
                 player.animate.Walking_left(player.animate)
+                
 
     # Если игрок не на земле и летит вверх, то играть анимацию прыжка,если падает, то падения
     if not player.onground:
@@ -163,6 +164,7 @@ while running:
             player.animate.Jumping(player.animate)
         elif player.Vy>0:
             player.animate.Falling(player.animate)
+            
 
     # Если игрок на земле, а до этого на земле не был проиграть анимацию приземления
     if player.onground == True and player.onground_prev == False:
@@ -183,6 +185,7 @@ while running:
         player.accelerate_left()
     if UpHeld:
         player.jump()
+        
 
     # В конце анимации запускается действие, поэтому вызывается анимация
     if MiningRight:
@@ -190,14 +193,7 @@ while running:
         
     if MiningLeft:
         fist.animate.Mining_hit_left(fist.animate)
-    
-    
-    
-
-
-    
-    
-    
+        
     
     # Держим цикл на правильной скорости
 

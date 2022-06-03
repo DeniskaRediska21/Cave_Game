@@ -19,7 +19,7 @@ class Cave:
             return room
 
 
-    def generate_random_room(self,fill_percent,l,h,step):
+    def generate_random_room(self,fill_percent,l,h,step,smoothig_steps = 5):
         room = rand.rand(h,l)*100
         room[room>fill_percent]= 0
         room[room>0] = 1
@@ -27,17 +27,17 @@ class Cave:
         room[-1,:] = 1
         room[:,0] = 1
         room[:,-1] = 1
-        for i in range(5):
+        for i in range(smoothig_steps):
             room = self.smooth(room,step)
         return room
 
 
-    def save_cave(self,fill_percent,l,h,step,scale,smooth_pixels = True):
+    def save_cave(self,fill_percent,l,h,step,scale,smooth_pixels = True,smoothig_steps = 5):
         # fill_percent = 47
         # h = 60
         # l = 80
         # step = 1
-        room = self.generate_random_room(fill_percent,l,h,step)
+        room = self.generate_random_room(fill_percent,l,h,step,smoothig_steps)
         # print(room)
 
         from PIL import Image

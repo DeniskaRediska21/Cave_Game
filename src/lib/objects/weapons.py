@@ -92,12 +92,29 @@ class mele(pygame.sprite.Sprite):
             for frame in self.mining_hit_right:
                 self.mining_hit_left.append(pygame.transform.flip(frame, True, False))
 
+class projectiles():
+    def __init__(self):
+        self.list = []
+    
+    def update(self,cave):
+        for number,bullet in enumerate(self.list):
+            Flag_X,Flag_Y = bullet.update(cave)
+            if Flag_X or Flag_Y != 0:
+                bullet.explode(cave,bullet.explosion_radius)
+                del self.list[number] 
+                
+    def render(self,screen,camera_scroll):
+        for bullet in self.list:
+            screen.blit(bullet.image, np.array(bullet.rect.topleft) - camera_scroll)
+    
+
 class bullet(pygame.sprite.Sprite):
-    def __init__(self,angle,pos,velocity = 15, gravity = 0,block_damage = 0.5, damage = 10, image = 'src\Textures\Pistol_bullet.png'):
+    def __init__(self,angle,pos,velocity = 15, gravity = 0,block_damage = 0.5, damage = 10, image = 'src\Textures\Pistol_bullet.png',explosion_radius = 25):
         pygame.sprite.Sprite.__init__(self)
         self.velocity = velocity
         self.gravity = gravity
         self.angle = angle
+        self.explosion_radius = explosion_radius
         
         self.image = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.rotate(self.image,math.degrees(-self.angle))
@@ -142,20 +159,16 @@ class shooting(pygame.sprite.Sprite):
         self.damage = damage
         
         
-    def shoot(self,camera_scroll,player):
+    def shoot(self,camera_scroll,player,projectiles):
         if self.timer ==0:
             mouse_pos = camera_scroll + np.array(pygame.mouse.get_pos())
             angle = math.atan2(mouse_pos[1] - player.rect.centery,mouse_pos[0] - player.rect.centerx)
-            self.bullets.append(bullet(angle,player.rect.center,velocity=self.velocity,gravity=self.gravity,block_damage = self.block_damage, damage=self.damage))
+            projectiles.list.append(bullet(angle,player.rect.center,velocity=self.velocity,gravity=self.gravity,block_damage = self.block_damage, damage=self.damage, explosion_radius = self.explosion_radius))
             self.timer = self.firerate
     
     def update(self,cave):
         self.timer = max(0,self.timer-1)
-        for number,bullet in enumerate(self.bullets):
-            Flag_X,Flag_Y = bullet.update(cave)
-            if Flag_X or Flag_Y != 0:
-                bullet.explode(cave,self.explosion_radius)
-                del self.bullets[number] 
+
 
             
         
